@@ -49,7 +49,8 @@ vector_to_histogram <- function(simulated_scores,
                                 xmax = NULL, 
                                 fill = "#702963"){
   
-  require(ggplot)
+  require(ggplot2)
+  require(scales)
   
   # plot
   if(is.null(xmin) & is.null(xmax)){

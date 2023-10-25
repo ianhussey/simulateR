@@ -33,7 +33,8 @@ vector_to_histogram_with_summary_statistics <- function(simulated_scores,
                                                         y_prop = 0.95,
                                                         fill = "#702963"){
   
-  require(ggplot)
+  require(ggplot2)
+  require(scales)
   
   if(is.null(xmin) | is.null(xmax)){
     stop("The arguments `xmin` and `xmax` must be set to numeric values. E.g., `xmin = -5, xmax = +5`")

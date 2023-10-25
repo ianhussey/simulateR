@@ -47,7 +47,8 @@ rnorm_histogram <- function(n,
                             y_prop = 0.95,
                             fill = "#702963"){
   
-  require(ggplot)
+  require(ggplot2)
+  require(scales)
   
   simulated_scores <- rnorm(n = n,
                             mean = mean,
