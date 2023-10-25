@@ -1,0 +1,11 @@
+Package: simulatR
+Title: Easily Simulate and Plot Data
+Version: 0.0.1
+Authors@R: 
+    person("Ian", "Hussey", , "Ian.hussey@unibe.ch", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-8906-7559"))
+Description: Easily simulate and plot data.
+License: use_mit_license()
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
