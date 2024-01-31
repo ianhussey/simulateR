@@ -2,6 +2,12 @@
 #'
 #'#' Plot a numeric vector as a ggplot2 histogram 
 #'
+#' @import stats
+#' @import utils
+#' @import graphics
+#' @import ggplot2
+#' @import scales
+#' 
 #' @param simulated_scores numeric vector of values to be plotted
 #' @param binwidth numeric binwidth argument for (\code{"ggplot2::geom_histogram()}.
 #' @param xmin numeric the xmin argument for (\code{"ggplot2::scale_x_continuous()}, used in both the breaks and limits arguments
@@ -11,6 +17,8 @@
 #' @return A ggplot object  
 #' 
 #' @examples
+#' library(ggplot2)
+#' 
 #' rnorm(n = 50, # sample n
 #'       mean = 0, # population mean (μ or mu)
 #'       sd = 1) |> # population sd (σ or sigma)
@@ -48,10 +56,7 @@ vector_to_histogram <- function(simulated_scores,
                                 xmin = NULL, 
                                 xmax = NULL, 
                                 fill = "#702963"){
-  
-  require(ggplot2)
-  require(scales)
-  
+
   # plot
   if(is.null(xmin) & is.null(xmax)){
     p <- 
@@ -61,8 +66,9 @@ vector_to_histogram <- function(simulated_scores,
       scale_x_continuous(name = "Simulated scores") +
       ylab("Count") +
       theme_linedraw() +
-      theme(panel.grid.minor = element_blank(),
-            text = element_text(family = "Courier New"))
+      # theme(panel.grid.minor = element_blank(),
+      #       text = element_text(family = "Courier New"))
+      theme(panel.grid.minor = element_blank())
   } else {
     p <- 
       data.frame(simulated_scores = simulated_scores) |>
@@ -73,8 +79,9 @@ vector_to_histogram <- function(simulated_scores,
                          name = "Simulated scores") +
       ylab("Count") +
       theme_linedraw() +
-      theme(panel.grid.minor = element_blank(),
-            text = element_text(family = "Courier New"))
+      # theme(panel.grid.minor = element_blank(),
+      #       text = element_text(family = "Courier New"))
+      theme(panel.grid.minor = element_blank())
   }
   
   return(p)

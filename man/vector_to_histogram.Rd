@@ -30,6 +30,8 @@ A ggplot object
 #' Plot a numeric vector as a ggplot2 histogram
 }
 \examples{
+library(ggplot2)
+
 rnorm(n = 50, # sample n
       mean = 0, # population mean (μ or mu)
       sd = 1) |> # population sd (σ or sigma)

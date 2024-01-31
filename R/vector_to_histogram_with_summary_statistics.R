@@ -2,6 +2,12 @@
 #'
 #' Plot a numeric vector as a ggplot2 histogram with annotated sample mean and SD
 #'
+#' @import stats
+#' @import utils
+#' @import graphics
+#' @import ggplot2
+#' @import scales
+#' 
 #' @param simulated_scores numeric vector of values to be plotted
 #' @param binwidth numeric binwidth argument for (\code{"ggplot2::geom_histogram()}.
 #' @param xmin numeric the xmin argument for (\code{"ggplot2::scale_x_continuous()}, used in both the breaks and limits arguments
@@ -13,6 +19,8 @@
 #' @return A ggplot object  
 #' 
 #' @examples
+#' library(ggplot2)
+#' 
 #' rnorm(n = 100000, # sample n
 #'       mean = 0, # population mean (μ or mu)
 #'       sd = 1) |> # population sd (σ or sigma)
@@ -32,9 +40,6 @@ vector_to_histogram_with_summary_statistics <- function(simulated_scores,
                                                         x_prop = 1, 
                                                         y_prop = 0.95,
                                                         fill = "#702963"){
-  
-  require(ggplot2)
-  require(scales)
   
   if(is.null(xmin) | is.null(xmax)){
     stop("The arguments `xmin` and `xmax` must be set to numeric values. E.g., `xmin = -5, xmax = +5`")
@@ -67,14 +72,15 @@ vector_to_histogram_with_summary_statistics <- function(simulated_scores,
                        name = "Simulated scores") +
     ylab("Count") +
     theme_linedraw() +
-    theme(panel.grid.minor = element_blank(),
-          text = element_text(family = "Courier New")) + 
+    # theme(panel.grid.minor = element_blank(),
+    #       text = element_text(family = "Courier New")) + 
+    theme(panel.grid.minor = element_blank()) + 
     annotate("text", 
              x = x_abs, 
              y = y_abs,
              size = 4,
              hjust = 1,
-             family = "Courier New",
+             #family = "Courier New",
              fontface = "bold",
              label = sprintf("Sample: N = %.0f, M = %.2f, SD = %.2f", n, sample_mean, sample_sd))
   

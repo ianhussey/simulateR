@@ -2,6 +2,13 @@
 #'
 #' Draw samples from a normal distribution and plot as a ggplot2 histogram, with annotated population mu and signma, and sample n, mean, and SD
 #'
+#' @import stats
+#' @import utils
+#' @import graphics
+#' @import dplyr
+#' @import ggplot2
+#' @import scales
+#'
 #' @param n numeric sample size (N)
 #' @param mean population mean (mu)
 #' @param sd population standard deviation (sigma)
@@ -47,9 +54,6 @@ rnorm_histogram <- function(n,
                             y_prop = 0.95,
                             fill = "#702963"){
   
-  require(ggplot2)
-  require(scales)
-  
   simulated_scores <- rnorm(n = n,
                             mean = mean,
                             sd = sd)
@@ -81,14 +85,15 @@ rnorm_histogram <- function(n,
                        name = "Simulated scores") +    
     ylab("Count") +
     theme_linedraw() +
-    theme(panel.grid.minor = element_blank(),
-          text = element_text(family = "Courier New")) +
+    # theme(panel.grid.minor = element_blank(),
+    #       text = element_text(family = "Courier New")) +
+    theme(panel.grid.minor = element_blank()) +
     annotate("text", 
              x = x_abs, 
              y = y_abs,
              size = 4,
              hjust = 1,
-             family = "Courier New",
+             #family = "Courier New",
              fontface = "bold",
              label = sprintf("Population: \u03BC = %.2f,  \u03C3 = %.2f", mean, sd)) + 
     annotate("text", 
@@ -96,7 +101,7 @@ rnorm_histogram <- function(n,
              y = y_abs2,
              size = 4,
              hjust = 1,
-             family = "Courier New",
+             #family = "Courier New",
              fontface = "bold",
              label = sprintf("Sample: N = %.0f, M = %.2f, SD = %.2f", n, sample_mean, sample_sd))
   
