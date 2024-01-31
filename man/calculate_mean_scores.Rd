@@ -38,5 +38,4 @@ results <-
                 iterations = 15) |>
   data_preprocessing(method = convert_to_likert) |>
   data_processing(method = calculate_mean_scores)
-
 }

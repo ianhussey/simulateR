@@ -2,10 +2,8 @@
 #'
 #' Estimate correlations between X, M, and Y, as well as their 95% CIs and p values.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
-#' @import lavaan
+#' @importFrom lavaan sem
+#' @importFrom lavaan parameterEstimates
 #' @import dplyr
 #' @import tidyr
 #' 

@@ -2,10 +2,6 @@
 #'
 #' Generate lavaan syntax for latent variables.
 #' 
-#' @import stats
-#' @import utils
-#' @import graphics
-#' 
 #' @param variable_name name of variable(s) as it appears in the data frame
 #' @param item_loading factor loading(s)
 #' @param n_indicators number of indicators per variable

@@ -2,10 +2,8 @@
 #'
 #' Fit a collider configural model (M ~ X + Y; Y ~ X) to the data using linear regression and a Maximum Likelihood estimator. Extract the beta estimates, their 95% CIs and p values.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
-#' @import lavaan
+#' @importFrom lavaan sem
+#' @importFrom lavaan parameterEstimates
 #' @import dplyr
 #' @import tidyr
 #' 

@@ -2,17 +2,11 @@
 #'
 #' Convert individual items to a mean score.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
 #' @import tidyr
 #' @import tibble
-#' 
 #' @param data A nested data frame.
-#'
 #' @return A nested data frame of data_raw + new scored data column.
-#' 
 #' @examples
 #' # population model
 #' population_model <-
@@ -36,7 +30,6 @@
 #'                 iterations = 15) |>
 #'   data_preprocessing(method = convert_to_likert) |>
 #'   data_processing(method = calculate_mean_scores)
-#' 
 #' @export
 calculate_mean_scores <- function(data) {
   

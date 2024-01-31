@@ -2,15 +2,9 @@
 #'
 #' Extract the latent scores already calculated in a previous data generation step.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
-#' 
 #' @param data A nested data frame.
-#'
 #' @return A nested data frame of data_raw + new scored data column.
-#' 
 #' @examples
 #' # population model
 #' population_model <-

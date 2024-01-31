@@ -2,13 +2,8 @@
 #'
 #' Summarize the decision based on the p value for Y ~ X across iterations of a fitted analysis. Useful for power analyses.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
-#'
 #' @param nested_results A nested data frame.
-#' 
 #' @examples
 #' # population model
 #' population_model <-

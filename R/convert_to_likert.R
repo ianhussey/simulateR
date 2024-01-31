@@ -2,10 +2,8 @@
 #'
 #' Convert continuous raw data to interval Likert data.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
+#' @importFrom janitor round_half_up
 #' 
 #' @param data A nested data frame.
 #'

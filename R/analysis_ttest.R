@@ -2,19 +2,13 @@
 #'
 #' Fit a t test to the data using the model Y ~ X and extract the estimated mean difference, the effects, 95% CIs and p values.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import broom
 #' @import dplyr
 #' @import tidyr
 #' @import forcats
 #' @import effsize
-#' 
 #' @param data A nested data frame containing the processed data.
-#'
 #' @return Results of analysis.
-#' 
 #' @examples
 #' # population model
 #' population_model <-

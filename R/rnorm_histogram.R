@@ -2,13 +2,9 @@
 #'
 #' Draw samples from a normal distribution and plot as a ggplot2 histogram, with annotated population mu and signma, and sample n, mean, and SD
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
 #' @import ggplot2
 #' @import scales
-#'
 #' @param n numeric sample size (N)
 #' @param mean population mean (mu)
 #' @param sd population standard deviation (sigma)
@@ -18,9 +14,7 @@
 #' @param x_prop numeric the x coordinate, in proportions of plot, where the annotation should appear
 #' @param y_prop numeric the y coordinate, in proportions of plot, where the annotation should appear
 #' @param fill string the fill color argument for (\code{"ggplot2::geom_histogram()}
-#'
-#' @return A ggplot object  
-#' 
+#' @return A ggplot object
 #' @examples
 #' rnorm_histogram(n = 100000, 
 #'                 mean = 0, 

@@ -2,9 +2,6 @@
 #'
 #' Generate lavaan syntax for latent variables Y, X and M, and paste together with string specifying regression models among them.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
 #' @import tidyr
 #' @param model_specification string lavaan model specification

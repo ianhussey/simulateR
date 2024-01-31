@@ -2,20 +2,14 @@
 #'
 #'#' Plot a numeric vector as a ggplot2 histogram 
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import ggplot2
 #' @import scales
-#' 
 #' @param simulated_scores numeric vector of values to be plotted
 #' @param binwidth numeric binwidth argument for (\code{"ggplot2::geom_histogram()}.
 #' @param xmin numeric the xmin argument for (\code{"ggplot2::scale_x_continuous()}, used in both the breaks and limits arguments
 #' @param xmax numeric the xmax argument for (\code{"ggplot2::scale_x_continuous()}, used in both the breaks and limits arguments
 #' @param fill string the fill color argument for (\code{"ggplot2::geom_histogram()}
-#'
 #' @return A ggplot object  
-#' 
 #' @examples
 #' library(ggplot2)
 #' 

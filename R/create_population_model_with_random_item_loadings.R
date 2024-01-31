@@ -4,9 +4,6 @@
 #' 
 #' Instead of using the same item loading for all indicators, define a min and max for each scale and sample from a uniform distribution between these values.
 #' 
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @param model_specification string lavaan model specification
 #' @param item_loading_min_y minimum factor loading for variable Y
 #' @param item_loading_max_y maximum factor loading for variable Y

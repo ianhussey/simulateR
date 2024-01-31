@@ -4,9 +4,6 @@
 #' 
 #' One use case for this package is to compare how differently specified models fit to a given data generating model (e.g., generating collider model data and fitting simple regression, mediation, collider, and confound models to it). Those other models will be fit using lavaan (and therefore maximum-likelihood estimation over OLS). In order to compare like with like, it may therefore be more appropriate to use analysis_regression_ml() for such a simulation. Other use cases may prefer a simple OLS regression. I therefore include both OLS/lm() and ML/lavaan::sem() implementations of bivariate regression. 
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import broom
 #' @import dplyr
 #' @import tidyr

@@ -5,7 +5,7 @@ Authors@R:
     person("Ian", "Hussey", , "ian.hussey@unibe.ch", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8906-7559"))
 Description: Easily simulate and plot data.
-Imports: graphics, stats, utils, dplyr, tidyr, tibble, forcats, stringr, broom, janitor, ggplot2, scales, furrr, future.apply, lavaan, simstandard, effsize, metafor
+Imports: dplyr, tidyr, tibble, forcats, stringr, broom, janitor, ggplot2, scales, furrr, future.apply, lavaan, simstandard, effsize, metafor
 License: use_mit_license()
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

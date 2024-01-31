@@ -2,10 +2,7 @@
 #'
 #' Round all numeric columns in a data frame to a given number of places using the round-half-up method, using \code{"janitor::round_half_up()"}.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
-#' @import janitor
+#' @importFrom janitor round_half_up
 #' @import dplyr
 #' @import tibble
 #' 

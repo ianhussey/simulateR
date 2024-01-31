@@ -2,9 +2,6 @@
 #'
 #' Extract the Cohen's d estimates from each iteration of a fitted t test analysis, e.g., for later meta analysis and/ forest plotting.
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
 #' @import tidyr
 #' @param nested_results A nested data frame.

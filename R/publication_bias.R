@@ -13,18 +13,12 @@
 #' 
 #' I use these as default values, but you can use your own. More extreme values might be more realistic, based on anecdotal experience (e.g., p_pub_sig = 0.70, p_pub_nonsig = 0.05)
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
 #' @import tidyr
-#' 
 #' @param effect_sizes nested data frame with results
 #' @param p_pub_sig probability of a significant result being labelled published = TRUE 
 #' @param p_pub_nonsig probability of a non-significant result being labelled published = TRUE 
-
 #' @return A data frame or tibble.
-#' 
 #' @export
 publication_bias <- function(effect_sizes, p_pub_sig = 0.61, p_pub_nonsig = 0.22){
   

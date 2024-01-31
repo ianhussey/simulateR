@@ -2,10 +2,7 @@
 #'
 #' Generate simulated data using a given population model, n iterations, and sample size.
 #' 
-#' @import stats
-#' @import utils
-#' @import graphics
-#' @import janitor
+#' @importFrom janitor round_half_up
 #' @import stringr
 #' @import simstandard
 #' @import dplyr

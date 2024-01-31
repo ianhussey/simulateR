@@ -2,13 +2,8 @@
 #'
 #' Summarize the mean estimates across across iterations of a fitted regression analysis (simple regression, confounder, mediation, collider, or correlational).
 #'
-#' @import stats
-#' @import utils
-#' @import graphics
 #' @import dplyr
-#' 
 #' @param nested_results A nested data frame.
-#' 
 #' @examples
 #' # population model
 #' population_model <-
