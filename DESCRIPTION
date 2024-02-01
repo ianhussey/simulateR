@@ -1,5 +1,5 @@
 Package: simulateR
-Title: Easily Simulate and Plot Data
+Title: Simple and modular Monte Carlo simulations for common analyses.
 Version: 0.0.1
 Authors@R: 
     person("Ian", "Hussey", , "ian.hussey@unibe.ch", role = c("aut", "cre"),
