@@ -29,6 +29,7 @@ options(scipen = 999)
 # devtools::install_github("ianhussey/simulateR") # to install
 library(simulateR)
 library(furrr)
+library(future)
 library(tibble)
 library(dplyr)
 library(tidyr)
@@ -37,7 +38,14 @@ library(knitr)
 library(kableExtra)
 
 # set up parallel processing
-future::plan(multisession)
+# without this functions such as data_preprocessing(), data_preprocessing(), 
+# and fit_model() will run on a single core. this may be much slower.
+future::plan(multicore)
+
+# note that plan(multicore) doesn't work on microsoft windows OS, only on apple mac OS + linux.
+# if you are running on a windows machine, you can use the following instead to at least run 
+# this code in a second background session of R, which allows you to do other things in R while code is running. 
+# future::plan(multisession)
 
 # set seed
 set.seed(42)
