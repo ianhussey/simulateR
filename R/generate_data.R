@@ -155,7 +155,7 @@ generate_data <- function(pop_model_label, pop_model, iterations,
           # sim_standardized(m = pop_model, 
           #                  n = n_per_iteration[i], 
           #                  errors = FALSE) |>
-          lavaan::simulateData(model = dummy_pop_model, 
+          lavaan::simulateData(model = pop_model, 
                                sample.nobs = n_per_iteration[i]) |>
             mutate(iteration = iterations_vector[[i]])
         },
