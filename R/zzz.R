@@ -1,6 +1,6 @@
 #' simulateR
 #'
-#' Easily simulate and plot data.
+#' Simple and modular Monte Carlo simulations for common analyses.
 #'
 #' @section Important:
 #' Package is in early stage development.
