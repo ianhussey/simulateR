@@ -4,7 +4,9 @@
 #'
 #' @import tidyr
 #' @import metafor
+#' @importFrom stats sd
 #' @param results Nested data frame containing results, as outputted by \code{"fit_model()"}.
+#' @param published_only should the meta-analysis only include studied with the column "published" == TRUE? This column is created by \code{"publication_bias()"}.
 #' @examples
 #' set.seed(42)
 #' 

@@ -7,6 +7,8 @@
 #' @import tidyr
 #' @import forcats
 #' @import effsize
+#' @importFrom stats sd
+#' @importFrom stats t.test
 #' @param data A nested data frame containing the processed data.
 #' @return Results of analysis.
 #' @examples

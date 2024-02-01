@@ -4,6 +4,7 @@
 #'
 #' @import dplyr
 #' @import furrr
+#' @importFrom future plan
 #' @param nested_data A nested data frame containing a column named data_raw, which is nested data frames of raw data, produced by the data generation functions.
 #' @param method the preprocessing function to be applied to data_raw, e.g., \code{"convert_to_likert()"}.
 #' @return A nested data frame of data_raw + new preprocessed data column.

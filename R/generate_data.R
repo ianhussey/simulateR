@@ -8,7 +8,8 @@
 #' @import dplyr
 #' @import tidyr
 #' @import future.apply
-#' 
+#' @importFrom stats rnorm
+#' @importFrom stats sd
 #' @param pop_model_label string label for the population model
 #' @param pop_model string lavaan specification for the population model
 #' @param iterations number of iterations aka simulated studies

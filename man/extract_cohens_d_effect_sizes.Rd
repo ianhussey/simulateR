@@ -7,7 +7,7 @@
 extract_cohens_d_effect_sizes(nested_fits)
 }
 \arguments{
-\item{nested_results}{A nested data frame.}
+\item{nested_fits}{A nested data frame.}
 }
 \description{
 Extract the Cohen's d estimates from each iteration of a fitted t test analysis, e.g., for later meta analysis and/ forest plotting.

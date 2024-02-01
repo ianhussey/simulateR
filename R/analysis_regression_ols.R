@@ -7,6 +7,7 @@
 #' @import broom
 #' @import dplyr
 #' @import tidyr
+#' @importFrom stats lm 
 #' 
 #' @param data A nested data frame containing the processed data.
 #'

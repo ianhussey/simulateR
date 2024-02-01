@@ -8,6 +8,8 @@ metaanalysis(results, published_only = FALSE)
 }
 \arguments{
 \item{results}{Nested data frame containing results, as outputted by \code{"fit_model()"}.}
+
+\item{published_only}{should the meta-analysis only include studied with the column "published" == TRUE? This column is created by \code{"publication_bias()"}.}
 }
 \description{
 Fit a random effects meta-analysis to the results across iterations.

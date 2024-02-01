@@ -4,7 +4,8 @@
 #'
 #' @import dplyr
 #' @import tidyr
-#' @param nested_results A nested data frame.
+#' @importFrom stats sd
+#' @param nested_fits A nested data frame.
 #' @examples
 #' set.seed(42)
 #' 

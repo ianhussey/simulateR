@@ -5,6 +5,8 @@
 #' @import dplyr
 #' @import ggplot2
 #' @import scales
+#' @importFrom stats rnorm
+#' @importFrom stats sd
 #' @param n numeric sample size (N)
 #' @param mean population mean (mu)
 #' @param sd population standard deviation (sigma)

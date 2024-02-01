@@ -4,13 +4,11 @@
 #'
 #' @importFrom lavaan sem
 #' @importFrom lavaan parameterEstimates
+#' @importFrom stats cor.test 
 #' @import dplyr
 #' @import tidyr
-#' 
 #' @param data A nested data frame containing the processed data.
-#'
 #' @return Results of analysis.
-#' 
 #' @examples
 #' # population model
 #' population_model <-

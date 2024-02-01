@@ -4,6 +4,9 @@
 #'
 #' @import ggplot2
 #' @import scales
+#' @importFrom stats rnorm
+#' @importFrom stats runif
+#' @importFrom stats sd
 #' @param simulated_scores numeric vector of values to be plotted
 #' @param binwidth numeric binwidth argument for (\code{"ggplot2::geom_histogram()}.
 #' @param xmin numeric the xmin argument for (\code{"ggplot2::scale_x_continuous()}, used in both the breaks and limits arguments

@@ -3,6 +3,7 @@
 #' Extract the latent scores already calculated in a previous data generation step.
 #'
 #' @import dplyr
+#' @importFrom stats sd
 #' @param data A nested data frame.
 #' @return A nested data frame of data_raw + new scored data column.
 #' @examples

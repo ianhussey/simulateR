@@ -15,6 +15,7 @@
 #'
 #' @import dplyr
 #' @import tidyr
+#' @importFrom stats runif
 #' @param effect_sizes nested data frame with results
 #' @param p_pub_sig probability of a significant result being labelled published = TRUE 
 #' @param p_pub_nonsig probability of a non-significant result being labelled published = TRUE 
