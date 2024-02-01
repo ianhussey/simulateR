@@ -51,14 +51,14 @@ analysis_regression_ols <- function(data){
            Y_X_pvalue = p.value) |>
     mutate(model_type = "regression (OLS)",
            model = "Y ~ X",
-           decision_regression_ols = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
+           decision = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
     select(model_type,
            model,
            Y_X_estimate,
            Y_X_pvalue,
            Y_X_ci_lower,
            Y_X_ci_upper,
-           decision_regression_ols)
+           decision)
   
   return(results)
   

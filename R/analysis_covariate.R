@@ -61,7 +61,7 @@ analysis_covariate <- function(data){
     pivot_wider(names_from = model,
                 values_from = c(pvalue, estimate, ci_lower, ci_upper),
                 names_glue = "{model}_{.value}") |>
-    mutate(decision_covariate = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE))
+    mutate(decision = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE))
   
   return(results)
   

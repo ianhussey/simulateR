@@ -8,7 +8,7 @@
 #' @import dplyr
 #' @import tidyr
 #' @param data A nested data frame containing the processed data.
-#' @return Results of analysis.
+#' @return A nested data frame containing the fitted results. The "decision" variable refers to whether a statistically correlation between Y and X (Y ~~ X) was found. This is somewhat arbitrary and could be rethought.
 #' @examples
 #' # population model
 #' population_model <-
@@ -55,13 +55,14 @@ analysis_correlations <- function(data){
            Y_X_pvalue   = p.value,
            Y_X_ci_lower = conf.low,
            Y_X_ci_upper = conf.high) |>
-    mutate(decision_correlation_Y_X = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
+    #mutate(decision_correlation_Y_X = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
+    mutate(decision_correlation = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
     select(Y_X_estimate,
            #Y_X_r,
            Y_X_pvalue,
            Y_X_ci_lower,
            Y_X_ci_upper,
-           decision_correlation_Y_X)
+           decision_correlation)
   
   results_Y_M <- 
     broom::tidy(cor.test(x = data$Y,
@@ -73,13 +74,13 @@ analysis_correlations <- function(data){
            Y_M_pvalue   = p.value,
            Y_M_ci_lower = conf.low,
            Y_M_ci_upper = conf.high) |>
-    mutate(decision_correlation_Y_M = ifelse(Y_M_pvalue < 0.05, TRUE, FALSE)) |>
+    #mutate(decision_correlation_Y_M = ifelse(Y_M_pvalue < 0.05, TRUE, FALSE)) |>
     select(Y_M_estimate,
            #Y_M_r,
            Y_M_pvalue,
            Y_M_ci_lower,
-           Y_M_ci_upper,
-           decision_correlation_Y_M)
+           Y_M_ci_upper))
+           #decision_correlation_Y_M)
   
   results_M_X <- 
     broom::tidy(cor.test(x = data$M,
@@ -91,13 +92,13 @@ analysis_correlations <- function(data){
            M_X_pvalue   = p.value,
            M_X_ci_lower = conf.low,
            M_X_ci_upper = conf.high) |>
-    mutate(decision_correlation_M_X = ifelse(M_X_pvalue < 0.05, TRUE, FALSE)) |>
+    #mutate(decision_correlation_M_X = ifelse(M_X_pvalue < 0.05, TRUE, FALSE)) |>
     select(M_X_estimate,
            #M_X_r,
            M_X_pvalue,
            M_X_ci_lower,
-           M_X_ci_upper,
-           decision_correlation_M_X)
+           M_X_ci_upper)
+           #decision_correlation_M_X)
   
   results <- 
     bind_cols(results_Y_X, 

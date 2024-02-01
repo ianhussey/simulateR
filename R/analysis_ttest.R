@@ -48,19 +48,19 @@ analysis_ttest <- function(data){
       t.test(Y ~ X, data = _, var.equal = TRUE, alternative = "two.sided") |>
       broom::tidy() |>
       rename(Y_X_estimate = estimate,
-             Y_X_pvalue = p.value,
+             Y_X_pvalue   = p.value,
              Y_X_ci_lower = conf.low,
              Y_X_ci_upper = conf.high) |>
       mutate(model_type = "t-test",
              model = "Y ~ X",
-             decision_ttest = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
+             decision = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
       select(model_type,
              model,
              Y_X_estimate,
              Y_X_pvalue,
              Y_X_ci_lower,
              Y_X_ci_upper,
-             decision_ttest)
+             decision)
     
     fit_cohensd <- 
       effsize::cohen.d(Y ~ as.factor(X), data = data_relevelled)
@@ -75,7 +75,7 @@ analysis_ttest <- function(data){
     
   } else {
     
-    results <- "X is not a factor with exactly two levels. t-test could not be applied to the data." 
+    results <- "X is not a factor with exactly two levels. t-test could not be applied to the data. Have you set factorial_design = TRUE in generate_data()?" 
     
   }
   

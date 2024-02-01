@@ -65,8 +65,7 @@ analysis_collider <- function(data){
     # mutate(collider =  ifelse(Y_X_pvalue < 0.05 & 
     #                             M_X_pvalue < 0.05 & 
     #                             M_Y_pvalue < 0.05, TRUE, FALSE))
-    mutate(decision_collider = ifelse(M_X_pvalue < 0.05 & 
-                                        M_Y_pvalue < 0.05, TRUE, FALSE))
+    mutate(decision = ifelse(M_X_pvalue < 0.05 & M_Y_pvalue < 0.05, TRUE, FALSE))
   
   return(results)
   

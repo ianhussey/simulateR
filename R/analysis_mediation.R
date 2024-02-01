@@ -73,9 +73,10 @@ analysis_mediation <- function(data){
     pivot_wider(names_from = model,
                 values_from = c(pvalue, estimate, ci_lower, ci_upper),
                 names_glue = "{model}_{.value}") |>
-    mutate(decision_mediation     = ifelse(indirect_pvalue < 0.05, TRUE, FALSE),
-           decision_mediation_Y_X = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE),
-           decision_mediation_Y_M = ifelse(Y_M_pvalue < 0.05, TRUE, FALSE))
+    mutate(decision               = ifelse(indirect_pvalue < 0.05, TRUE, FALSE))
+           #decision_2             = ifelse(direct_pvalue < 0.05, TRUE, FALSE), # not checked
+           #decision_mediation_Y_X = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE),
+           #decision_mediation_Y_M = ifelse(Y_M_pvalue < 0.05, TRUE, FALSE))
   
   return(results)
   

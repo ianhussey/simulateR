@@ -65,8 +65,8 @@ analysis_confounder <- function(data){
     # mutate(confounder =  ifelse(Y_X_pvalue < 0.05 & 
     #                                Y_M_pvalue < 0.05 & 
     #                                X_M_pvalue < 0.05, TRUE, FALSE))
-    mutate(decision_confounder =  ifelse(Y_M_pvalue < 0.05 & 
-                                           X_M_pvalue < 0.05, TRUE, FALSE))
+    mutate(decision =  ifelse(Y_M_pvalue < 0.05 & 
+                                X_M_pvalue < 0.05, TRUE, FALSE))
   
   return(results)
   
