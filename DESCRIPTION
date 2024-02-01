@@ -5,6 +5,7 @@ Authors@R:
     person("Ian", "Hussey", , "ian.hussey@unibe.ch", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8906-7559"))
 Description: Easily simulate and plot data.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
@@ -19,6 +20,7 @@ Imports:
     ggplot2, 
     scales, 
     furrr, 
+    future,
     future.apply, 
     lavaan, 
     simstandard, 
@@ -29,6 +31,5 @@ Suggests:
     kableExtra,
     devtools,
     roxygen2
-License: use_mit_license()
 VignetteBuilder: knitr
 BuildVignettes: true
