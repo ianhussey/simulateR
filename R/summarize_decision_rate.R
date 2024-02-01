@@ -4,30 +4,6 @@
 #'
 #' @import dplyr
 #' @param nested_results A nested data frame.
-#' @examples
-#' # population model
-#' population_model <-
-#'   create_population_model_with_random_item_loadings(
-#'     model_specification = "Y_latent ~ 0*X_latent", # true effect size of zero
-#'     item_loading_min_y = 0.99,
-#'     item_loading_max_y = 0.99,
-#'     n_indicators_y = 8,
-#'   )
-#' 
-#' # run simulations
-#' results <- 
-#'   generate_data(pop_model_label = "ttest indicators",
-#'                 pop_model = population_model, 
-#'                 factorial_design = TRUE,
-#'                 n = 100, 
-#'                 iterations = 1000) |>
-#'   data_processing(method = use_latent_scores) |>
-#'   fit_model(analysis = analysis_ttest)
-#' 
-#' # decision rate should equal the alpha value of the test when the true effect size is zero (.05)
-#' results |>
-#'   summarize_decision_rate()
-#'  
 #' @export
 summarize_decision_rate <- function(nested_results) {
   

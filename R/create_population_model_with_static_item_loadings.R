@@ -12,16 +12,6 @@
 #' @param n_indicators_x number of indicators for varible X
 #' @param n_indicators_m number of indicators for varible M
 #' @return A nested data frame of data_raw + new scored data column.
-#' @examples
-#' create_population_model_with_static_item_loadings(
-#'   model_specification = "Y ~ 0.0*X + 0.0*M; X ~~ 0.0*M",
-#'   item_loading_y = 0.9,
-#'   item_loading_x = 0.7,
-#'   item_loading_m = 0.5,
-#'   n_indicators_y = 10,
-#'   n_indicators_x = 10,
-#'   n_indicators_m = 10
-#' )
 #' @export
 create_population_model_with_static_item_loadings <- function(model_specification,
                                                               item_loading_y = .99, 

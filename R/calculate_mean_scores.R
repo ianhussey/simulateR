@@ -7,29 +7,6 @@
 #' @import tibble
 #' @param data A nested data frame.
 #' @return A nested data frame of data_raw + new scored data column.
-#' @examples
-#' # population model
-#' population_model <-
-#'   create_population_model_with_static_item_loadings(
-#'     model_specification = 
-#'       "Y_latent ~ 0.5*X_latent + 0.5*M_latent; 
-#'        X_latent ~~ 0.5*M_latent",
-#'     item_loading_y = 0.8,
-#'     item_loading_x = 0.7,
-#'     item_loading_m = 0.6,
-#'     n_indicators_y = 10,
-#'     n_indicators_x = 8,
-#'     n_indicators_m = 6
-#'   )
-#' 
-#' # run simulation
-#' results <- 
-#'   generate_data(pop_model_label = "covariate",
-#'                 pop_model = population_model, 
-#'                 n = 100, 
-#'                 iterations = 15) |>
-#'   data_preprocessing(method = convert_to_likert) |>
-#'   data_processing(method = calculate_mean_scores)
 #' @export
 calculate_mean_scores <- function(data) {
   

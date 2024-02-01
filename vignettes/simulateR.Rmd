@@ -192,7 +192,7 @@ results <-
   #extract_cohens_d_effect_sizes() |>
   publication_bias(p_pub_sig = 0.90, p_pub_nonsig = 0.10)
 
-lm(Y ~ X, data = results$data_processed[[1]])
+#lm(Y ~ X, data = results$data_processed[[1]])
 
 # res <- results |>
 #   unnest(fit) |>

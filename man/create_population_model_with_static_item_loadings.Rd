@@ -36,14 +36,3 @@ A nested data frame of data_raw + new scored data column.
 \description{
 Generate lavaan syntax for latent variables Y, X and M, and paste together with string specifying regression models among them.
 }
-\examples{
-create_population_model_with_static_item_loadings(
-  model_specification = "Y ~ 0.0*X + 0.0*M; X ~~ 0.0*M",
-  item_loading_y = 0.9,
-  item_loading_x = 0.7,
-  item_loading_m = 0.5,
-  n_indicators_y = 10,
-  n_indicators_x = 10,
-  n_indicators_m = 10
-)
-}

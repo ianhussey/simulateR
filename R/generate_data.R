@@ -25,44 +25,7 @@
 #' @param n_mean integer mean sample size per iteration (simulated study). Either n or both n_mean and n_sd must be specified but not both. Note that generated values <6 will be changed to 6.
 #' @param n_sd integer SD sample size per iteration (simulated study). Either n or both n_mean and n_sd must be specified but not both.
 #' @param factorial_design boolean indicating if data should be generated for a single group cross sectional design or a two group factorial design.
-#'
 #' @return A nested data frame of data_raw + new scored data column.
-#' 
-#' @examples
-#' # Example 1: Population is a covariate regression model. 
-#' # Each sample from the population is of equal size.
-#' population_model <-
-#'   create_population_model_with_static_item_loadings(
-#'     model_specification =
-#'       "Y_latent ~ 0.5*X_latent + 0.0*M_latent;
-#'        X_latent ~~ 0.0*M_latent",
-#'     item_loading_y = 0.8,
-#'     item_loading_x = 0.8,
-#'     item_loading_m = 0.8,
-#'     n_indicators_y = 10,
-#'     n_indicators_x = 10,
-#'     n_indicators_m = 10
-#'   )
-#' 
-#' simulated_data <-
-#'   generate_data(pop_model_label = "covariate indicators",
-#'                 pop_model = population_model,
-#'                 n = 100,
-#'                 iterations = 50)
-#'                 
-#' # Example 2: Population is a between-groups difference in means. 
-#' # Studies vary in their sample sizes.
-#' population_model <- "Y ~ 0.25*X"
-#' 
-#' # run a simulation
-#' results <- 
-#'   generate_data(pop_model_label = "ttest indicators",
-#'                 pop_model = population_model, 
-#'                 factorial_design = TRUE,
-#'                 n_mean = 100,
-#'                 n_sd = 25,
-#'                 iterations = 25)
-#' 
 #' @export
 generate_data <- function(pop_model_label, pop_model, iterations, 
                           n, n_mean, n_sd,

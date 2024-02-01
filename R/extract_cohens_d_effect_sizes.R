@@ -8,45 +8,6 @@
 #' @import tidyr
 #' @importFrom stats sd
 #' @param nested_fits A nested data frame.
-#' @examples
-#' set.seed(42)
-#' 
-#' true_population_effect_size <- 0.2
-#' 
-#' # population model
-#' population_model <-
-#'   create_population_model_with_random_item_loadings(
-#'     model_specification = paste0("Y_latent ~ ", true_population_effect_size, "*X_latent"),
-#'     item_loading_min_y = 0.5,
-#'     item_loading_max_y = 0.9,
-#'     n_indicators_y = 8,
-#'   )
-#' 
-#' # run a simulation
-#' results <- 
-#'   generate_data(pop_model_label = "ttest indicators",
-#'                 pop_model = population_model, 
-#'                 factorial_design = TRUE,
-#'                 #n = 50, 
-#'                 n_mean = 100,
-#'                 n_sd = 25,
-#'                 iterations = 25) |>
-#'   data_preprocessing(method = convert_to_likert) |>
-#'   data_processing(method = use_latent_scores) |>
-#'   fit_model(analysis = analysis_ttest) |>
-#'   extract_cohens_d_effect_sizes()
-#' 
-#' # meta with no publication bias
-#' fit <- results |>
-#'   tidyr::unnest(effect_sizes) |>
-#'   metafor::rma(yi = y,
-#'                sei = se,
-#'                data = _) 
-#' 
-#' # meta ESs
-#' paste("true population effect size =", true_population_effect_size)
-#' paste("meta effect size =", janitor::round_half_up(fit$beta[,1], 2))
-#'  
 #' @export
 extract_cohens_d_effect_sizes <- function(nested_fits){
   

@@ -9,35 +9,6 @@ analysis_confounder(data)
 \arguments{
 \item{data}{A nested data frame containing the processed data.}
 }
-\value{
-Results of analysis.
-}
 \description{
 Fit a confounder configural model (Y ~ X + M) to the data using linear regression and a Maximum Likelihood estimator. Extract the beta estimates, their 95\% CIs and p values.
-}
-\examples{
-# population model
-population_model <-
-  create_population_model_with_static_item_loadings(
-    model_specification = 
-      "Y_latent ~ 0.5*X_latent + 0.5*M_latent; 
-       X_latent ~~ 0.5*M_latent",
-    item_loading_y = 0.8,
-    item_loading_x = 0.7,
-    item_loading_m = 0.6,
-    n_indicators_y = 10,
-    n_indicators_x = 8,
-    n_indicators_m = 6
-  )
-
-# run a simulation
-results <- 
-  generate_data(pop_model_label = "covariate indicators",
-                pop_model = population_model, 
-                n = 100, 
-                iterations = 15) |>
-  data_preprocessing(method = convert_to_likert) |>
-  data_processing(method = calculate_mean_scores) |>
-  fit_model(analysis = analysis_confounder)
-
 }

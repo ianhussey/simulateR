@@ -4,17 +4,17 @@
 \alias{publication_bias}
 \title{publication_bias}
 \usage{
-publication_bias(effect_sizes, p_pub_sig = 0.61, p_pub_nonsig = 0.22)
+publication_bias(nested_fits, p_pub_sig = 0.61, p_pub_nonsig = 0.22)
 }
 \arguments{
-\item{effect_sizes}{nested data frame with results}
+\item{nested_fits}{nested data frame with fitted models (i.e., results)}
 
 \item{p_pub_sig}{probability of a significant result being labelled published = TRUE}
 
 \item{p_pub_nonsig}{probability of a non-significant result being labelled published = TRUE}
 }
 \value{
-A data frame or tibble.
+Data frame. The input data frame with a new column, published (logical)
 }
 \description{
 Create a boolean "published" column for each iteration (ie simulated study) based on the prior probability of statistically (non)significant results being published.

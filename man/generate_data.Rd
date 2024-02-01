@@ -15,15 +15,15 @@ generate_data(
 )
 }
 \arguments{
-\item{pop_model_label}{string label for the population model}
+\item{pop_model_label}{string label for the population model, e.g., "confounder indicators" for a confounder causal model with data for individual indicators (e.g., self report items) as well as the latent scores (e.g., sum scores)}
 
-\item{pop_model}{string lavaan specification for the population model}
+\item{pop_model}{string specifying population model using lavaan notation.}
 
 \item{iterations}{number of iterations aka simulated studies}
 
 \item{n}{sample size per iteration (simulated study). Either n or both n_mean and n_sd must be specified but not both.}
 
-\item{n_mean}{integer mean sample size per iteration (simulated study). Either n or both n_mean and n_sd must be specified but not both.}
+\item{n_mean}{integer mean sample size per iteration (simulated study). Either n or both n_mean and n_sd must be specified but not both. Note that generated values <6 will be changed to 6.}
 
 \item{n_sd}{integer SD sample size per iteration (simulated study). Either n or both n_mean and n_sd must be specified but not both.}
 
@@ -35,45 +35,12 @@ A nested data frame of data_raw + new scored data column.
 \description{
 Generate simulated data using a given population model, n iterations, and sample size.
 }
-\examples{
-# Example 1: Population is a covariate regression model. 
-# Each sample from the population is of equal size.
-population_model <-
-  create_population_model_with_static_item_loadings(
-    model_specification =
-      "Y_latent ~ 0.5*X_latent + 0.0*M_latent;
-       X_latent ~~ 0.0*M_latent",
-    item_loading_y = 0.8,
-    item_loading_x = 0.8,
-    item_loading_m = 0.8,
-    n_indicators_y = 10,
-    n_indicators_x = 10,
-    n_indicators_m = 10
-  )
+\details{
+To generate both item level data and latent scores, use a helper function (e.g., create_population_model_with_static_item_loadings()
+or create_population_model_with_random_item_loadings()) create the model specification which must include the assignment of indicators via "=~".
+To generate only the latent variables, specify only the regressions (e.g., "Y ~ 0.5\emph{X + 0.0}M"). See the vignettes for examples.
 
-simulated_data <-
-  generate_data(pop_model_label = "covariate indicators",
-                pop_model = population_model,
-                n = 100,
-                iterations = 50)
-                
-# Example 2: Population is a between-groups difference in means. 
-# Studies vary in their sample sizes.
-population_model <-
-  create_population_model_with_random_item_loadings(
-    model_specification = "Y_latent ~ 0.25*X_latent",
-    item_loading_min_y = 0.5,
-    item_loading_max_y = 0.9,
-    n_indicators_y = 8,
-  )
-
-# run a simulation
-results <- 
-  generate_data(pop_model_label = "ttest indicators",
-                pop_model = population_model, 
-                factorial_design = TRUE,
-                n_mean = 100,
-                n_sd = 25,
-                iterations = 25)
-
+Note that for the later processing, hacking, and analysis functions to work, generate_data() must produce data with the correct variable names:
+To generate item level data and latent variables, you must specify the population model to include variables "Y_latent", "X_latent", and (for some) "M_latent".
+To generate just the latent variables/scored data, you must specify the population model to include the variables "Y", "X", and (for some) "M" (i.e., no "_latent").
 }

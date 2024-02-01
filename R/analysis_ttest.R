@@ -10,30 +10,6 @@
 #' @importFrom stats sd
 #' @importFrom stats t.test
 #' @param data A nested data frame containing the processed data.
-#' @return Results of analysis.
-#' @examples
-#' # population model
-#' population_model <-
-#'   create_population_model_with_random_item_loadings(
-#'     model_specification = "Y_latent ~ 0.2*X_latent",
-#'     item_loading_min_y = 0.5,
-#'     item_loading_max_y = 0.9,
-#'     n_indicators_y = 8,
-#'   )
-#' 
-#' # run a simulation
-#' results <- 
-#'   generate_data(pop_model_label = "ttest indicators",
-#'                 pop_model = population_model, 
-#'                 factorial_design = TRUE,
-#'                 #n = 50, 
-#'                 n_mean = 100,
-#'                 n_sd = 25,
-#'                 iterations = 100) |>
-#'   data_preprocessing(method = convert_to_likert) |>
-#'   data_processing(method = use_latent_scores) |>
-#'   fit_model(analysis = analysis_ttest)
-#' 
 #' @export
 analysis_ttest <- function(data){
   
