@@ -5,8 +5,30 @@ Authors@R:
     person("Ian", "Hussey", , "ian.hussey@unibe.ch", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8906-7559"))
 Description: Easily simulate and plot data.
-Imports: dplyr, tidyr, tibble, forcats, stringr, broom, janitor, ggplot2, scales, furrr, future.apply, lavaan, simstandard, effsize, metafor
-License: use_mit_license()
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Imports: 
+    dplyr, 
+    tidyr, 
+    tibble, 
+    forcats, 
+    stringr, 
+    broom, 
+    janitor, 
+    ggplot2, 
+    scales, 
+    furrr, 
+    future.apply, 
+    lavaan, 
+    simstandard, 
+    effsize, 
+    metafor
+Suggests:
+    knitr,
+    kableExtra,
+    devtools,
+    roxygen2
+License: use_mit_license()
+VignetteBuilder: knitr
+BuildVignettes: true
