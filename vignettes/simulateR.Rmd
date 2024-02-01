@@ -1,0 +1,186 @@
+---
+title: "simulateR vignette"
+author: "Ian Hussey"
+output: 
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{simulateR vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include=FALSE}
+
+# formatting options
+# set default chunk options
+knitr::opts_chunk$set(message = FALSE, 
+                      warning = FALSE)
+
+# disable scientific notation
+options(scipen = 999) 
+
+```
+
+# Dependencies & options
+
+```{r}
+
+# dependencies
+# devtools::install_github("ianhussey/simulateR") # to install
+library(simulateR)
+library(furrr)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(metafor)
+library(knitr)
+library(kableExtra)
+
+# set up parallel processing
+future::plan(multisession)
+
+# set seed
+set.seed(42)
+
+```
+
+# Dance of the *p* values
+
+- Variable sample sizes between studies
+
+```{r fig.height=5, fig.width=7}
+
+set.seed(42)
+
+true_population_effect_size <- 0
+
+population_model <-
+  create_population_model_with_static_item_loadings(
+    model_specification = paste0("Y_latent ~ ", true_population_effect_size, "*X_latent")
+  )
+
+# run a simulation
+results <- 
+  generate_data(pop_model_label = "ttest indicators",
+                pop_model = population_model, 
+                factorial_design = TRUE,
+                n_mean = 30,
+                n_sd = 12,
+                iterations = 12) |>
+  data_preprocessing(method = convert_to_likert) |>
+  data_processing(method = use_latent_scores) |>
+  fit_model(analysis = analysis_ttest) |>
+  extract_cohens_d_effect_sizes() |>
+  publication_bias(p_pub_sig = 0.90, p_pub_nonsig = 0.10)
+
+results |>
+  unnest(effect_sizes) |>
+  arrange(desc(iteration)) |>
+  select(p_value = p_pub) |>
+  round_df(2) |>
+  kable() |>
+  kable_classic(full_width = FALSE)
+
+fit <- metaanalysis(results)
+
+# forest plot
+forest(fit, 
+       xlab = "Cohen's d",
+       addfit = FALSE,
+       addcred = TRUE,
+       refline = 0,
+       at = c(-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5),
+       xlim = c(-2.75, 2.75))
+
+```
+
+# Influence of publication bias on meta-analysis
+
+- Variable sample sizes between studies
+- Significant results more likely to be published
+- Meta-analysis across studies
+
+```{r}
+
+set.seed(42)
+
+true_population_effect_size <- 0.2
+
+# population model
+# population_model <-
+#   create_population_model_with_random_item_loadings(
+#     model_specification = paste0("Y_latent ~ ", true_population_effect_size, "*X_latent"),
+#     item_loading_min_y = 0.5,
+#     item_loading_max_y = 0.9,
+#     n_indicators_y = 8,
+#   )
+
+population_model <-
+  create_population_model_with_static_item_loadings(
+    model_specification = paste0("Y_latent ~ ", true_population_effect_size, "*X_latent")
+  )
+
+# run a simulation
+results <- 
+  generate_data(pop_model_label = "ttest indicators",
+                pop_model = population_model, 
+                factorial_design = TRUE,
+                n_mean = 100,
+                n_sd = 30,
+                iterations = 100) |>
+  data_preprocessing(method = convert_to_likert) |>
+  data_processing(method = use_latent_scores) |>
+  fit_model(analysis = analysis_ttest) |>
+  extract_cohens_d_effect_sizes() |>
+  publication_bias(p_pub_sig = 0.90, p_pub_nonsig = 0.10)
+
+
+# meta with no publication bias
+fit_unbiased <- metaanalysis(results)
+
+# meta with publication bias
+fit_biased <- metaanalysis(results, published_only = TRUE)
+
+# meta ESs
+tibble(label = c("true population", 
+                 "meta (all studies)", 
+                 "meta (publication biased)"),
+       effect_size = c(true_population_effect_size, 
+                       janitor::round_half_up(fit_unbiased$beta[,1], 2),
+                       janitor::round_half_up(fit_biased$beta[,1], 2)))
+
+```
+
+```{r fig.height=20, fig.width=7}
+
+forest(fit_unbiased, 
+       xlab = "Cohen's d",
+       addcred = TRUE,
+       refline = 0,
+       at = c(-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5),
+       xlim = c(-2.75, 2.75),
+       slab = paste("Conducted study", seq_len(fit_unbiased$k)))
+
+```
+
+```{r fig.height=8, fig.width=7}
+
+forest(fit_biased,
+       xlab = "Cohen's d",
+       addcred = TRUE,
+       refline = 0,
+       at = c(-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5),
+       xlim = c(-2.75, 2.75),
+       slab = paste("Published study", seq_len(fit_biased$k)))
+
+```
+
+# Session info
+
+```{r}
+
+sessionInfo()
+
+```
+
+
