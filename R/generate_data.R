@@ -120,7 +120,7 @@ generate_data <- function(pop_model_label, pop_model, iterations,
             
             if(str_detect(pop_model, "=~")){
               results <- results |>
-                reame(X_latent = X)
+                rename(X_latent = X)
             }
             
           } else {
