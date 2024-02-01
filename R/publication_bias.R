@@ -16,25 +16,24 @@
 #' @import dplyr
 #' @import tidyr
 #' @importFrom stats runif
-#' @param effect_sizes nested data frame with results
+#' @param nested_fits nested data frame with fitted models (i.e., results)
 #' @param p_pub_sig probability of a significant result being labelled published = TRUE 
 #' @param p_pub_nonsig probability of a non-significant result being labelled published = TRUE 
-#' @return A data frame or tibble.
+#' @return Data frame. The input data frame with a new column, published (logical) 
 #' @export
-publication_bias <- function(effect_sizes, p_pub_sig = 0.61, p_pub_nonsig = 0.22){
+publication_bias <- function(nested_fits, p_pub_sig = 0.61, p_pub_nonsig = 0.22){
   
-  results <- effect_sizes |>
-    mutate(effect_sizes_with_publication_bias = effect_sizes) |>
-    unnest(effect_sizes_with_publication_bias) |>
+  published <- nested_fits |>
+    unnest(fit) |>
     mutate(p_pub = runif(n = n(), min = 0, max = 1),
-           published = ifelse((conclusion == "significant" & p_pub >= (1 - p_pub_sig)) |
-                                (conclusion == "non-significant" & p_pub >= (1 - p_pub_nonsig)), TRUE, FALSE)) |>
-    select(pop_model_label, pop_model, iteration, data_raw, data_processed, fit, 
-           y, se, conclusion, p_pub, published) |>
-    nest(effect_sizes = c(y, se, conclusion, p_pub, published))
+           published = ifelse((decision == TRUE & p_pub >= (1 - p_pub_sig)) |
+                                (decision == FALSE & p_pub >= (1 - p_pub_nonsig)), TRUE, FALSE)) |>
+    select(iteration, published)
+    
+  results_published <- left_join(nested_fits, published, by = "iteration")
   
-  return(results)
+  return(results_published)
   
 }
 
-
+  
