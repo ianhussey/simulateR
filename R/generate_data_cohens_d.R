@@ -12,8 +12,8 @@
 #' 
 #' @import dplyr
 #' @import tidyr
-#' @import stringr str_remove
-#' @import stringr str_replace_all
+#' @importFrom stringr str_remove
+#' @importFrom stringr str_replace_all
 #' @import future.apply
 #' @importFrom stats rnorm
 #' @param pop_model_label string label for the population model, e.g., "confounder indicators" for a confounder causal model with data for individual indicators (e.g., self report items) as well as the latent scores (e.g., sum scores)
