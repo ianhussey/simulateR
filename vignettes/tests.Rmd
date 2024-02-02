@@ -1,0 +1,226 @@
+---
+title: "simulateR tests"
+author: "Ian Hussey"
+output: 
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{simulateR vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include=FALSE}
+
+# formatting options
+# set default chunk options
+knitr::opts_chunk$set(message = FALSE, 
+                      warning = FALSE)
+
+# disable scientific notation
+options(scipen = 999) 
+
+```
+
+# Notation
+
+The {simulateR} package makes frequent use of the variable labels Y, X, and M to (a) describe the data generating model used to simulate data and (b) to describe the analytic model applied to a simulated dataset, so it's useful to understand the usage of these three labels. E.g. analyses:
+
+- *t*-test: $Y \sim X$, where $Y$ is the continuous DV and $X$ is categorical IV (intervention vs. control). 
+- Correlation: $Y \sim X$, where $Y$ and $X$ are continuous variables. 
+- Regression: $Y \sim X + M$, where $Y$ is the continuous DV and $X$ and $M$ are continuous IVs. E.g., to estimate the causal impact of $X$ on $Y$, while controlling for the covariate $M$.
+
+The second IV is labelled M because this borrows from conventions in mediation analysis:
+
+- Mediation analysis: $Y \sim X + M; M \sim X$, where $Y$ is the continuous DV, $X$ is a continuous IV, and $M$ is a continuous mediating variable. 
+
+{simulateR} also allows these three variables can also (a) generate data from and (b) fit analytic models assuming other configuration models too (e.g., confounds and colliders). For an introduction to understanding the differences between these simple regression/mediation/confounds/colliders, and the importance of thinking about causal modelling, see [Rohrer (2018)](https://journals.sagepub.com/doi/full/10.1177/2515245917745629) and [Wysocki et al. (2022)](https://journals.sagepub.com/doi/full/10.1177/25152459221095823).
+
+# Dependencies & options
+
+```{r}
+
+# dependencies
+# devtools::install_github("ianhussey/simulateR") # to install
+library(simulateR)
+library(furrr)
+library(future)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(metafor)
+library(stringr)
+library(knitr)
+library(kableExtra)
+
+# set up parallel processing
+# without this functions such as data_preprocessing(), data_preprocessing(), 
+# and fit_model() will run on a single core. this may be much slower.
+future::plan(multicore)
+
+# note that plan(multicore) doesn't work on microsoft windows OS, only on apple mac OS + linux.
+# if you are running on a windows machine, you can use the following instead to at least run 
+# this code in a second background session of R, which allows you to do other things in R while code is running. 
+# future::plan(multisession)
+
+# set seed
+set.seed(42)
+
+```
+
+# Parameter recovery
+
+Large sample sizes and iterations
+
+## Cohen's *d* specified directly
+
+```{r}
+
+set.seed(42)
+
+sim_results <- 
+  generate_data_cohens_d(pop_model_label = "parameter recovery: cohen's d",
+                         n1 = 1000,
+                         n2 = 1000,
+                         cohens_d = 0.00,
+                         iterations = 1000) |>
+  fit_model(analysis = analysis_ttest) |>
+  extract_cohens_d_effect_sizes()
+
+metaanalysis(sim_results)
+
+sim_results |>
+  unnest(fit) |>
+  unnest(effect_sizes) |>
+  summarize(mean_Y_X_estimate = mean(Y_X_estimate),
+            mean_Y_X_std_es_estimate = mean(Y_X_std_es_estimate),
+            mean_y = mean(y),
+            discovery_rate = mean(decision))
+
+# drop object to ensure next check does not reuse results
+rm(sim_results)
+
+```
+
+## Cohen's *d* from summary stats
+
+```{r}
+
+set.seed(42)
+
+sim_results <- 
+  generate_data_cohens_d(pop_model_label = "parameter recovery: cohen's d from summary stats",
+                         n1 = 1000,
+                         n2 = 1000,
+                         m1 = 0,
+                         m2 = 0,
+                         sd1 = 1,
+                         sd2 = 1,
+                         iterations = 1000) |>
+  fit_model(analysis = analysis_ttest) |>
+  extract_cohens_d_effect_sizes()
+
+metaanalysis(sim_results)
+
+sim_results |>
+  unnest(fit) |>
+  unnest(effect_sizes) |>
+  summarize(mean_Y_X_estimate = mean(Y_X_estimate),
+            mean_Y_X_std_es_estimate = mean(Y_X_std_es_estimate),
+            mean_y = mean(y),
+            discovery_rate = mean(decision))
+
+# drop object to ensure next check does not reuse results
+rm(sim_results)
+
+```
+
+## Simple regression, latents only
+
+```{r}
+
+set.seed(42)
+
+population_beta <- 0.70
+
+sim_results <- 
+  generate_data_crosssectional(pop_model_label = "simple regression latent only",
+                               pop_model = paste0("Y ~ ", population_beta, "*X"), 
+                               n = 1000,
+                               iterations = 1000)
+
+sim_results |>
+  fit_model(analysis = analysis_regression_ols) |>
+  unnest(fit) |>
+  summarize(mean_beta = mean(Y_X_estimate))
+
+sim_results |>
+  fit_model(analysis = analysis_regression_ml) |>
+  unnest(fit) |>
+  summarize(mean_beta = mean(Y_X_estimate))
+
+# drop object to ensure next check does not reuse results
+rm(sim_results)
+
+```
+
+# Realistic scenarios
+
+Smaller sample sizes and number of iterations (simulated studies)
+
+## Publication bias
+
+```{r}
+
+set.seed(42)
+
+sim_results <- 
+  generate_data_cohens_d(pop_model_label = "scenario: cohen's d with publication bias",
+                         n1 = 20,
+                         n2 = 20,
+                         cohens_d = 0,
+                         iterations = 45) |>
+  fit_model(analysis = analysis_ttest) |>
+  extract_cohens_d_effect_sizes() |>
+  publication_bias(p_pub_nonsig = 0.10, p_pub_sig = 0.80)
+
+metaanalysis(sim_results) |> forest()
+metaanalysis(sim_results, published_only = TRUE) |> forest()
+
+# drop object to ensure next check does not reuse results
+rm(sim_results)
+
+```
+
+## Power analysis for simple regression
+
+```{r}
+
+set.seed(42)
+
+population_beta <- 0.50
+
+sim_results <- 
+  generate_data_crosssectional(pop_model_label = "simple regression latent only",
+                               pop_model = paste0("Y ~ ", population_beta, "*X"), 
+                               n = 50,
+                               iterations = 1000) |>
+  fit_model(analysis = analysis_regression_ols) 
+
+sim_results |>
+  unnest(fit) |>
+  summarize(power = mean(decision))
+
+# drop object to ensure next check does not reuse results
+rm(sim_results)
+
+```
+
+# Session info
+
+```{r}
+
+sessionInfo()
+
+```
+
+
