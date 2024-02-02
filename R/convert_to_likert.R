@@ -1,6 +1,6 @@
 #' convert_to_likert
 #'
-#' Convert continuous raw data to interval Likert data.
+#' Convert continuous raw data to interval Likert-like data. Assumes simulated raw data has mean = 0 and SD = 1. Note that this is violated when generating factorials data, especially when the effect size is very large.
 #'
 #' @import dplyr
 #' @importFrom janitor round_half_up
