@@ -12,7 +12,7 @@
 #' 
 #' @importFrom janitor round_half_up
 #' @import stringr
-#' @import simstandard
+#' @import lavaan
 #' @import dplyr
 #' @import tidyr
 #' @import future.apply
@@ -47,14 +47,11 @@ generate_data <- function(pop_model_label, pop_model, iterations,
     n_per_iteration <- ifelse(n_per_iteration < 6, 6, n_per_iteration)
     
   } else if(!missing(n) & missing(n_mean) & missing(n_sd)){
-    
     n_per_iteration <- rep(n, times = iterations)
-    
   } else {
-    
     stop("You must specify either an integer value for n (i.e., fixed n used for all datasets) or values for both n_mean and n_sd (i.e., variable n per datasest, with specfied mean and SD [corrected to have a minimum n = 10]).")
-    
   }
+  
   
   if(factorial_design == TRUE){
     
@@ -65,20 +62,18 @@ generate_data <- function(pop_model_label, pop_model, iterations,
     if(str_detect(pop_model, "=~")){
       # find the start of the regression model, and drop everything before it
       pop_model_regression <- str_split(pop_model, "Y_latent ~ ", simplify = TRUE)[,2]
-      pop_model_regression <- str_split(pop_model_regression, "Y_latent =~ ", simplify = TRUE)[,1]
+      #pop_model_regression <- str_split(pop_model_regression, "Y_latent =~ ", simplify = TRUE)[,1]
     } else {
       pop_model_regression <- str_split(pop_model, "Y ~ ", simplify = TRUE)[,2]
     }
     
     # extract beta value from model 
     beta <- pop_model_regression |>
-      # remove all non numbers
       str_remove_all("[^0-9.-]") |>
       as.numeric()
     
     if(str_detect(pop_model, "=~")){
       pop_model_latent <- str_split(pop_model, "Y_latent =~ ", simplify = TRUE)[,2]
-      
       # same latent specification as pop_model, but regression is set to zero. Otherwise noise is introduced into Y~X other beyond sampling variance and the beta value.
       dummy_pop_model <- paste("Y_latent ~ 0.0*X \n Y_latent =~ ", pop_model_latent)
     } else {
@@ -96,36 +91,36 @@ generate_data <- function(pop_model_label, pop_model, iterations,
             n_control      <- ceiling(n_per_iteration[i]/2)
             n_intervention <- n_per_iteration[i] - n_control
             
-            results <- bind_rows(
-              # simulate data for control group (X_latent = 0)
-              # sim_standardized(m = dummy_pop_model, 
-              #                  n = n_control, 
-              #                  errors = FALSE) |>
-              lavaan::simulateData(model = dummy_pop_model, 
-                                   sample.nobs = n_control) |>
-                mutate(X = 0) |>
-                select(X, contains("Y")),
-              # simulate data for control group (X_latent = 1)
-              # sim_standardized(m = dummy_pop_model, 
-              #                  n = n_intervention,
-              #                  errors = FALSE) |>
-              lavaan::simulateData(model = dummy_pop_model, 
-                                   sample.nobs = n_intervention) |>
-                # offset this condition by value of beta
-                mutate(across(everything(), function(x){x + beta}), 
-                       X = 1) |>
-                select(X, contains("Y"))
-            ) |>
+            results <- 
+              bind_rows(
+                
+                # simulate data for control group (X_latent = 0)
+                # sim_standardized(m = dummy_pop_model, n = n_control, errors = FALSE) |>
+                lavaan::simulateData(model = dummy_pop_model, sample.nobs = n_control) |>
+                  # offset this condition by value of -0.5*beta
+                  mutate(across(everything(), function(x){x - 0.5*beta}), 
+                         X = 0) |>
+                  select(X, contains("Y")),
+                
+                # simulate data for control group (X_latent = 1)
+                # sim_standardized(m = dummy_pop_model, n = n_intervention, errors = FALSE) |>
+                lavaan::simulateData(model = dummy_pop_model, sample.nobs = n_intervention) |>
+                  # offset this condition by value of +0.5*beta
+                  mutate(across(everything(), function(x){x + 0.5*beta}), 
+                         X = 1) |>
+                  select(X, contains("Y"))
+                
+              ) |>
               mutate(iteration = iterations_vector[[i]])
             
-            if(str_detect(pop_model, "=~")){
-              results <- results |>
-                rename(X_latent = X)
-            }
+            # if(str_detect(pop_model, "=~")){
+            #   results <- results |>
+            #     rename(X_latent = X)
+            # }
             
           } else {
             
-            stop("Error: Population model is mispecified. The effect size for X was not parsed correctly from the pop_model string. Correct specification is 'Y ~ 0.5*X' for effect size = 0.5. No M value supported.")
+            stop("Error: Population model is mispecified. The effect size for X was not parsed correctly from the pop_model string. See vignette for working examples.")
             
           }
           
@@ -146,17 +141,15 @@ generate_data <- function(pop_model_label, pop_model, iterations,
     
     
   } else if (factorial_design == FALSE){
-    # otherwise simply generate data with continuous IVs
     
+    # otherwise simply generate data with continuous IVs
+
     results <- 
       future.apply::future_lapply(
         seq_along(iterations_vector), 
         function(i, ...){
-          # sim_standardized(m = pop_model, 
-          #                  n = n_per_iteration[i], 
-          #                  errors = FALSE) |>
-          lavaan::simulateData(model = pop_model, 
-                               sample.nobs = n_per_iteration[i]) |>
+          # sim_standardized(m = pop_model, n = n_per_iteration[i], errors = FALSE) |>
+          lavaan::simulateData(model = pop_model, sample.nobs = n_per_iteration[i]) |>
             mutate(iteration = iterations_vector[[i]])
         },
         future.seed = TRUE
