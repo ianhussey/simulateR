@@ -4,7 +4,12 @@
 \alias{publication_bias}
 \title{publication_bias}
 \usage{
-publication_bias(nested_fits, p_pub_sig = 0.61, p_pub_nonsig = 0.22)
+publication_bias(
+  nested_fits,
+  p_pub_sig = 0.61,
+  p_pub_nonsig = 0.22,
+  support_only = TRUE
+)
 }
 \arguments{
 \item{nested_fits}{nested data frame with fitted models (i.e., results)}
@@ -12,6 +17,8 @@ publication_bias(nested_fits, p_pub_sig = 0.61, p_pub_nonsig = 0.22)
 \item{p_pub_sig}{probability of a significant result being labelled published = TRUE}
 
 \item{p_pub_nonsig}{probability of a non-significant result being labelled published = TRUE}
+
+\item{support_only}{determines whether results are more likely to be published if they are merely statistically significant (support_only = FALSE) or if they have to be significant and in the direction predicted by the theory (i.e., effect size > 0: support_only = TRUE).}
 }
 \value{
 Data frame. The input data frame with a new column, published (logical)
