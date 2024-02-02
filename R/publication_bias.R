@@ -19,17 +19,33 @@
 #' @param nested_fits nested data frame with fitted models (i.e., results)
 #' @param p_pub_sig probability of a significant result being labelled published = TRUE 
 #' @param p_pub_nonsig probability of a non-significant result being labelled published = TRUE 
+#' @param support_only determines whether results are more likely to be published if they are merely statistically significant (support_only = FALSE) or if they have to be significant and in the direction predicted by the theory (i.e., effect size > 0: support_only = TRUE).  
 #' @return Data frame. The input data frame with a new column, published (logical) 
 #' @export
-publication_bias <- function(nested_fits, p_pub_sig = 0.61, p_pub_nonsig = 0.22){
+publication_bias <- function(nested_fits, p_pub_sig = 0.61, p_pub_nonsig = 0.22, support_only = TRUE){
   
-  published <- nested_fits |>
-    unnest(fit) |>
-    mutate(p_pub = runif(n = n(), min = 0, max = 1),
-           published = ifelse((decision == TRUE & p_pub >= (1 - p_pub_sig)) |
-                                (decision == FALSE & p_pub >= (1 - p_pub_nonsig)), TRUE, FALSE)) |>
-    select(iteration, published)
+  if(support_only == TRUE){
     
+    published <- nested_fits |>
+      unnest(fit) |>
+      mutate(p_pub = runif(n = n(), min = 0, max = 1),
+             published = ifelse((decision == TRUE & Y_X_estimate > 0 & p_pub >= (1 - p_pub_sig)) |
+                                  (decision == FALSE & Y_X_estimate > 0 & p_pub >= (1 - p_pub_nonsig)), TRUE, FALSE)) |>
+      select(iteration, published)
+    
+  } else if (support_only == FALSE){
+    
+    published <- nested_fits |>
+      unnest(fit) |>
+      mutate(p_pub = runif(n = n(), min = 0, max = 1),
+             published = ifelse((decision == TRUE & p_pub >= (1 - p_pub_sig)) |
+                                  (decision == FALSE & p_pub >= (1 - p_pub_nonsig)), TRUE, FALSE)) |>
+      select(iteration, published)
+    
+  } else {
+    stop("support_only must be either TRUE or FALSE")
+  }
+  
   results_published <- left_join(nested_fits, published, by = "iteration")
   
   return(results_published)
