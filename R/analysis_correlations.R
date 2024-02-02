@@ -31,7 +31,7 @@ analysis_correlations <- function(data){
            Y_X_ci_lower = conf.low,
            Y_X_ci_upper = conf.high) |>
     #mutate(decision_correlation_Y_X = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
-    mutate(decision_correlation = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
+    mutate(decision = ifelse(Y_X_pvalue < 0.05, TRUE, FALSE)) |>
     select(Y_X_estimate,
            #Y_X_r,
            Y_X_pvalue,
