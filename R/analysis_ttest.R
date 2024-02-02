@@ -39,7 +39,7 @@ analysis_ttest <- function(data){
              decision)
     
     fit_cohensd <- 
-      effsize::cohen.d(Y ~ as.factor(X), data = data_relevelled)
+      effsize::cohen.d(Y ~ as.factor(X), within = FALSE, data = data_relevelled)
     
     results_cohensd <- 
       tibble(Y_X_std_es_estimate = fit_cohensd$estimate,
