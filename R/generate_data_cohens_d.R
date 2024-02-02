@@ -38,16 +38,21 @@ generate_data_cohens_d <- function(pop_model_label, n1, n2, m1, m2, sd1, sd2, co
     sd1 <- sd2 <- 1
     m1 <- 0
     m2 <- m1 + (cohens_d * sd1)
+    
+    pop_model <- paste0("Cohen's d = ", cohens_d)
   } else if(!missing(m1) & !missing(m2) & !missing(sd1) & !missing(sd2) & missing(cohens_d)){
-    # continue
+    # recalculate cohen's d from summary stats to include in the pop model
+    sd_pooled <- sqrt(((n1 - 1) * sd1^2 + (n2 - 1) * sd2^2)/((n1 + n2) - 2))
+    cohens_d_from_summary_stats <- (m2 - m1)/sd_pooled
+    
+    pop_model <- paste0("Cohen's d = ", cohens_d_from_summary_stats, "; m1 = ", m1, "; m2 = ", m2, "; sd1 = ", sd1, "; sd2 = ", sd2)
   } else {
     stop("You must supply values for either (a) m1, m2, sd1, and sd2 OR (b) cohens_d but not both.")
   }
   
   # set up vectors for loops
   iterations_vector <- seq(1:iterations)
-  n_per_iteration <- rep(n, times = iterations)
-  
+
   results <- 
     future.apply::future_lapply(
       seq_along(iterations_vector), 
