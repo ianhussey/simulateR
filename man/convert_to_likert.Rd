@@ -13,5 +13,5 @@ convert_to_likert(data)
 A nested data frame of data_raw + new preprocessed data column.
 }
 \description{
-Convert continuous raw data to interval Likert data.
+Convert continuous raw data to interval Likert-like data. Assumes simulated raw data has mean = 0 and SD = 1. Note that this is violated when generating factorials data, especially when the effect size is very large.
 }
