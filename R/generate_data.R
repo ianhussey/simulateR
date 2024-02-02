@@ -11,7 +11,8 @@
 #' To generate just the latent variables/scored data, you must specify the population model to include the variables "Y", "X", and (for some) "M" (i.e., no "_latent").
 #' 
 #' @importFrom janitor round_half_up
-#' @import stringr
+#' @importFrom stringr str_remove
+#' @importFrom stringr str_replace_all
 #' @import lavaan
 #' @import dplyr
 #' @import tidyr
