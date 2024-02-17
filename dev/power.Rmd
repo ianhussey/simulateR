@@ -1,0 +1,526 @@
+
+# dependencies
+
+```{r}
+
+#library(lavaan)
+#library(psych)
+#library(readr)
+library(tidyr)
+library(dplyr)
+library(forcats)
+library(ggplot2)
+library(purrr) # Load purrr for functional programming tools
+library(effsize)
+
+```
+
+# Get a single iteration of the data generation and analysis working
+
+## Generate some data for an independent t-test
+
+condition: factor with two levels (control, intervention)
+score: numeric of normally distributed data (within each condition), with different means, and SD = 1.
+
+```{r}
+
+set.seed(42)
+
+generated_data <- 
+  bind_rows(
+    tibble(condition = "control",
+           score = rnorm(n = 100, mean = 0.0, sd = 1)),
+    tibble(condition = "intervention",
+           score = rnorm(n = 100, mean = 0.5, sd = 1))
+  ) |>
+  # order control's levels so that intervention is the first level and control is the second
+  # this ensures that positive cohen's d values refer to intervention > control and not the other way around.
+  mutate(condition = fct_relevel(condition, "intervention", "control"))
+
+View(generated_data)
+
+```
+
+## Fit a t test & calculate effect size
+
+```{r}
+
+t.test(formula = score ~ condition, 
+       data = generated_data,
+       var.equal = TRUE,
+       alternative = "two.sided")
+
+cohen.d(formula = score ~ condition, 
+        data = generated_data,
+        alternative = "two.sided")
+
+```
+# create a data generating function
+
+## make the existing code more abstract
+
+Move the values to variables
+
+```{r}
+
+n_control = 50
+n_intervention = n_control
+mean_control = 0
+mean_intervention = 0.5
+sd_control = 1
+sd_intervention = 1
+
+generated_data <- 
+  bind_rows(
+    tibble(condition = "control",
+           score = rnorm(n = n_control, mean = mean_control, sd = sd_control)),
+    tibble(condition = "intervention",
+           score = rnorm(n = n_intervention, mean = mean_intervention, sd = sd_intervention))
+  ) |>
+  # order control's levels so that intervention is the first level and control is the second
+  # this ensures that positive cohen's d values refer to intervention > control and not the other way around.
+  mutate(condition = fct_relevel(condition, "intervention", "control"))
+
+View(generated_data)
+
+```
+
+## make it a function
+
+```{r}
+
+generate_data <- function(n_control,
+                          n_intervention,
+                          mean_control,
+                          mean_intervention,
+                          sd_control,
+                          sd_intervention) {
+  
+  data <- 
+    bind_rows(
+      tibble(condition = "control",
+             score = rnorm(n = n_control, mean = mean_control, sd = sd_control)),
+      tibble(condition = "intervention",
+             score = rnorm(n = n_intervention, mean = mean_intervention, sd = sd_intervention))
+    ) |>
+    # order control's levels so that intervention is the first level and control is the second
+    # this ensures that positive cohen's d values refer to intervention > control and not the other way around.
+    mutate(condition = fct_relevel(condition, "intervention", "control"))
+  
+  return(data)
+}
+  
+generated_data <- generate_data(n_control = 50,
+                                n_intervention = 50,
+                                mean_control = 0,
+                                mean_intervention = 0.5,
+                                sd_control = 1,
+                                sd_intervention = 1)
+
+View(generated_data)
+
+```
+
+## Check the data is what you meant to data
+
+Inspect it visually, check the data types, plot it etc. Fit the same t test & calculate effect size to check the analysis runs
+
+```{r}
+
+t.test(formula = score ~ condition, 
+       data = generated_data,
+       var.equal = TRUE,
+       alternative = "two.sided")
+
+cohen.d(formula = score ~ condition, 
+        data = generated_data,
+        alternative = "two.sided")
+
+```
+
+# create a data analysis function
+
+now do the same abstraction for the analysis!
+
+## make the existing code more abstract
+
+rather than just printing all the results, extract the p value and cohen's d
+
+```{r}
+
+res_t_test <- t.test(formula = score ~ condition, 
+                     data = generated_data,
+                     var.equal = TRUE,
+                     alternative = "two.sided")
+
+res_cohens_d <- cohen.d(formula = score ~ condition, 
+                        data = generated_data,
+                        alternative = "two.sided")
+
+res <- tibble(p = res_t_test$p.value,
+              d = res_cohens_d$estimate)
+
+res
+
+```
+
+## make it a function
+
+```{r}
+
+analyse_data <- function(data) {
+  
+  res_t_test <- t.test(formula = score ~ condition, 
+                      data = data,
+                      var.equal = TRUE,
+                      alternative = "two.sided")
+  
+  res_cohens_d <- cohen.d(formula = score ~ condition, 
+                          data = data,
+                          alternative = "two.sided")
+  
+  res <- tibble(p = res_t_test$p.value,
+                d = res_cohens_d$estimate)
+  
+  return(res)
+}
+
+```
+
+# simulate
+
+## original manual code
+
+```{r}
+
+set.seed(42)
+
+generated_data <- 
+  bind_rows(
+    tibble(condition = "control",
+           score = rnorm(n = 100, mean = 0.0, sd = 1)),
+    tibble(condition = "intervention",
+           score = rnorm(n = 100, mean = 0.5, sd = 1))
+  ) |>
+  # order control's levels so that intervention is the first level and control is the second
+  # this ensures that positive cohen's d values refer to intervention > control and not the other way around.
+  mutate(condition = fct_relevel(condition, "intervention", "control"))
+
+t.test(formula = score ~ condition, 
+       data = generated_data,
+       var.equal = TRUE,
+       alternative = "two.sided")
+
+cohen.d(formula = score ~ condition, 
+        data = generated_data,
+        alternative = "two.sided")
+
+```
+
+## new code using functions
+
+```{r}
+
+set.seed(42)
+
+generated_data <- generate_data(n_control = 50,
+                                n_intervention = n_control,
+                                mean_control = 0,
+                                mean_intervention = 0.5,
+                                sd_control = 1,
+                                sd_intervention = 1)
+
+results <- analyse_data(generated_data)
+
+results
+
+```
+
+## do it lots of times and summarize across them
+
+```{r}
+
+set.seed(42)
+
+# define the number of iterations
+iterations <- 100
+
+# declare a vector to store each iteration's results in
+p_values <- numeric(iterations)
+
+# use for loop to repeat its content many times
+for(i in 1:iterations){
+  
+  # generate data
+  generated_data <- generate_data(n_control = 50,
+                                  n_intervention = 50,
+                                  mean_control = 0,
+                                  mean_intervention = 0.5,
+                                  sd_control = 1,
+                                  sd_intervention = 1)
+  
+  # analyse data
+  results <- analyse_data(generated_data)
+  
+  # store result of this iteration
+  # the i-th element of the iterations vector will be replaced with the p value of the current iteration's t-test
+  p_values[i] <- results$p
+}
+
+# summarize individual analysis results across iterations to find stimulation results
+mean(p_values < .05)
+
+```
+
+Congratulations, you've just run your first simulation. 
+
+- Data generating mechanism: true effect cohen's d = 0.50 (i.e., difference in means = 0.50, both SDs = 1), 50 participants per condition.
+- Data analysis: independent t-test p value.
+- Iterations: 100
+- Summary across iterations: For 50 participants per condition, when the true population effect exists (is non zero, i.e., cohen's d = .50), an independent t-test produces statistically significant p values in `r round(mean(p_values < .05)*100, 1)`% of cases. This is the definition of statistical power: the proportion of cases where effects that do exist are correctly detected (i.e., true positive results). 
+
+# what if i want to simulate other situations, and compare between them?
+
+I.e., I want my simulation to be an experiment.
+
+You could extend the method above, but it gets tricky very quickly.
+
+For example, if I wanted to see how changing the number of participants in (a) the control condition and (b) the intervention condition so that either can be anywhere between 50 and 250 (in steps of 50), including having different number between them (e.g., control = 200, intervention = 100), then I'll have to either:
+
+- Repeat my code a lot. This is always a bad idea. Repeating simple tasks we're bad at doing ourselves is the reason we invented computers.
+- Abstract the code further in some way, such as using more for-loops.
+
+## Nested for loops
+
+Before you look at this code, know that it much harder to understand and much harder to write too. I'm showing you this method so that you know it exists and is the most basic way of doing it - not because we are going to do it in any of the rest of this course.
+
+```{r}
+
+set.seed(42)
+
+# define the number of iterations
+iterations <- 100
+n_control_conditions <- seq(from = 50, to = 250, by = 50)
+n_intervention_conditions <- seq(from = 50, to = 250, by = 50)
+
+# initialize results list
+simulation_results <- list()
+
+# counter for appending results
+result_counter <- 1
+
+# use nested for loops to iterate over conditions
+for(k in n_intervention_conditions){ # for each of the 'k'-th members of the n_intervention_conditions vector ... 
+  for(j in n_control_conditions){ # ... and for each of the 'j'-th members of the n_control_conditions vector ...
+    for(i in 1:iterations){ # ... and for each value of 'i' in the sequence 1 to iterations, run the following code with those values of i, j, and k:
+      
+      # generate data
+      generated_data <- generate_data(n_control = j,  # current value of j
+                                      n_intervention = k,  # current value of k
+                                      mean_control = 0,
+                                      mean_intervention = 0.5,
+                                      sd_control = 1,
+                                      sd_intervention = 1)
+      
+      # analyse data
+      results <- analyse_data(generated_data)
+      
+      # save results for this iteration as the 'result_counter'-th member of the simulation_results list
+      simulation_results[[result_counter]] <- list(
+        n_control = j, # current value of j
+        n_intervention = k, # current value of k
+        p_value = results$p  # current value the t test's p value
+      )
+      
+      # increment the iteration counter
+      result_counter <- result_counter + 1
+    }
+  }
+}
+
+# convert the list-of-lists into a data frame, as its easier to wrangle and plot
+simulation_results_df <- bind_rows(simulation_results)
+
+# summarize individual analysis results across iterations to find stimulation results
+# ie plot as a bar plot
+simulation_results_df |>
+  mutate(n_control = as.factor(n_control),
+         n_intervention = as.factor(n_intervention)) |>
+  group_by(n_control, n_intervention) |>
+  summarize(power = mean(p_value < .05), .groups = "drop") |>
+  ggplot(aes(n_control, power, fill = n_intervention)) +
+  geom_col(position = position_dodge(width = 0.4), width = 0.4) +
+  scale_fill_viridis_d(option = "mako", begin = 0.3, end = 0.8, 
+                       guide = guide_legend(reverse = TRUE)) +
+  coord_cartesian(ylim = c(0.6,1)) +
+  theme_linedraw() +
+  ggtitle("All conditions") +
+  ylab("Estimated statistical power")
+
+```
+
+- why do some conditions with higher sample sizes have lower estimated power? this shouldn't be the case, right?
+- because just like in an experiment with human participants, your sample size matters. We have only collected data from 100 iterations, and so the standard errors around each estimate will still be quite large. Set `iterations` to `1000` in the above chunk and re-run it and observe the change in results. Note that it will take a few seconds to run, depending on how fast your computer is.
+
+While where here, what else can we learn from this stimulation (specifically) before we go back to thinking about how to build simulations (generally)?
+
+Let's plot only those simulations where the total sample size between the two conditions is n = 300. By doing this, we are effectively simulating the impact of (un)balanced sample sizes on an independent t-test's statistical power. That is, all the columns refer to the same total sample size, but they differ in the number allotted to the control vs intervention conditions.  
+
+```{r}
+
+simulation_results_df |>
+  filter(n_control + n_intervention == 300) |> # subset only the conditions where total n = 300
+  mutate(n_control = as.factor(n_control),
+         n_intervention = as.factor(n_intervention)) |>
+  group_by(n_control, n_intervention) |>
+  summarize(power = mean(p_value < .05), .groups = "drop") |>
+  ggplot(aes(n_control, power, fill = n_intervention)) +
+  geom_col(position = position_dodge(width = 0.4), width = 0.4) +
+  scale_fill_viridis_d(option = "mako", begin = 0.3, end = 0.8, 
+                       guide = guide_legend(reverse = TRUE)) +
+  coord_cartesian(ylim = c(0.6,1)) +
+  theme_linedraw() +
+  ggtitle("Conditions where total N = 300") +
+  ylab("Estimated statistical power")
+
+```
+
+This shows that power is highest when the two conditions have balanced sample sizes, and tells us something about how much power decreases when sample sizes are unbalanced. 
+
+Note however that larger sample sizes are always preferable over smaller ones! i have seen students make this mistake recently. Don't ever not have a larger sample size if you can. E.g., compare power in the above conditions where total n = 300 (power > .85) with the below conditions where total n = 150 (power < .80). 
+
+```{r}
+
+simulation_results_df |>
+  filter(n_control + n_intervention == 150) |> # subset only the conditions where total n = 150
+  mutate(n_control = as.factor(n_control),
+         n_intervention = as.factor(n_intervention)) |>
+  group_by(n_control, n_intervention) |>
+  summarize(power = mean(p_value < .05), .groups = "drop") |>
+  ggplot(aes(n_control, power, fill = n_intervention)) +
+  geom_col(position = position_dodge(width = 0.4), width = 0.4) +
+  scale_fill_viridis_d(option = "mako", begin = 0.3, end = 0.8, 
+                       guide = guide_legend(reverse = TRUE)) +
+  coord_cartesian(ylim = c(0.6,1)) +
+  theme_linedraw() +
+  ggtitle("Conditions where total N = 150") +
+  ylab("Estimated statistical power")
+
+```
+
+Ok. Back to the question of simulations generally now. 
+
+## a better way
+
+(but just one of many)
+
+```{r}
+
+# define experiment parameters
+experiment_parameters_grid <- expand_grid(
+  n_control = seq(from = 50, to = 250, by = 50),
+  n_intervention = seq(from = 50, to = 250, by = 50),
+  mean_control = 0,
+  mean_intervention = 0.5,
+  sd_control = 1,
+  sd_intervention = 1,
+  iteration = 1:100
+)
+
+simulation <- 
+  # using the experiment parameters
+  experiment_parameters_grid |>
+  
+  # generate data using the data generating function and the parameters relevant to data generation
+  # ensure they are listed in the correct order!
+  mutate(generated_data = pmap(list(n_control,
+                                    n_intervention,
+                                    mean_control,
+                                    mean_intervention,
+                                    sd_control,
+                                    sd_intervention),
+                               generate_data)) |>
+  
+  # apply the analysis function to the generated data using the parameters relevant to analysis
+  # ensure they are listed in the correct order!
+  mutate(analysis_results = pmap(list(generated_data),
+                                 analyse_data))
+  
+# summarise results across iterations
+simulation |>
+  unnest(analysis_results) |>
+  mutate(n_control = as.factor(n_control),
+         n_intervention = as.factor(n_intervention)) |>
+  group_by(n_control,
+           n_intervention) |>
+  summarize(power = mean(p < .05), .groups = "drop") |>
+  ggplot(aes(n_control, power, fill = n_intervention)) +
+  geom_col(position = position_dodge(width = 0.4), width = 0.4) +
+  scale_fill_viridis_d(option = "mako", begin = 0.3, end = 0.8, 
+                       guide = guide_legend(reverse = TRUE)) +
+  coord_cartesian(ylim = c(0.6,1)) +
+  theme_linedraw() +
+  ggtitle("All conditions") +
+  ylab("Estimated statistical power")
+
+```
+
+## look how flexible it is
+
+I can add many other conditions very easily, like also changing the true effect size im simulating for.
+
+```{r fig.height=5, fig.width=10}
+
+# define experiment parameters
+experiment_parameters_grid <- expand_grid(
+  n_control = seq(from = 50, to = 250, by = 50),
+  n_intervention = seq(from = 50, to = 250, by = 50),
+  mean_control = 0,
+  mean_intervention = c(0.25, 0.50, 0.75), # additional values here
+  sd_control = 1,
+  sd_intervention = 1,
+  iteration = 1:100
+)
+
+simulation <- 
+  # using the experiment parameters
+  experiment_parameters_grid |>
+  
+  # generate data using the data generating function and the parameters relevant to data generation
+  # ensure they are listed in the correct order!
+  mutate(generated_data = pmap(list(n_control,
+                                    n_intervention,
+                                    mean_control,
+                                    mean_intervention,
+                                    sd_control,
+                                    sd_intervention),
+                               generate_data)) |>
+  
+  # apply the analysis function to the generated data using the parameters relevant to analysis
+  # ensure they are listed in the correct order!
+  mutate(analysis_results = pmap(list(generated_data),
+                                 analyse_data))
+  
+# summarise results across iterations
+simulation |>
+  unnest(analysis_results) |>
+  mutate(n_control = as.factor(n_control),
+         n_intervention = as.factor(n_intervention),
+         true_effect = paste("Cohen's d =", mean_intervention)) |>
+  group_by(n_control,
+           n_intervention,
+           true_effect) |>
+  summarize(power = mean(p < .05), .groups = "drop") |>
+  ggplot(aes(n_control, power, fill = n_intervention)) +
+  geom_col(position = position_dodge(width = 0.4), width = 0.4) +
+  scale_fill_viridis_d(option = "mako", begin = 0.3, end = 0.8, 
+                       guide = guide_legend(reverse = TRUE)) +
+  theme_linedraw() +
+  ggtitle("All conditions") +
+  ylab("Estimated statistical power") +
+  facet_wrap(~ true_effect)
+
+```
+
+
+
