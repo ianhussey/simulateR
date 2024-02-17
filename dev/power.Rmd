@@ -424,7 +424,7 @@ experiment_parameters_grid <- expand_grid(
   mean_intervention = 0.5,
   sd_control = 1,
   sd_intervention = 1,
-  iteration = 1:100
+  iteration = 1:100 # note this is a series not an integer, i.e., "1:100" not "100" 
 )
 
 simulation <- 
@@ -465,6 +465,8 @@ simulation |>
 
 ```
 
+- inspect the parameters grid to see how it contains a row for each iteration to be run, containing all the parameters for that iteration.
+
 ## look how flexible it is
 
 I can add many other conditions very easily, like also changing the true effect size im simulating for.
@@ -479,7 +481,7 @@ experiment_parameters_grid <- expand_grid(
   mean_intervention = c(0.25, 0.50, 0.75), # additional values here
   sd_control = 1,
   sd_intervention = 1,
-  iteration = 1:100
+  iteration = 1:100 # note this is a series not an integer, i.e., "1:100" not "100" 
 )
 
 simulation <- 
@@ -522,5 +524,5 @@ simulation |>
 
 ```
 
-
+- inspect the `simulation` object: notice that it saves the data and results from each iteration as a "nested data frame" column. you can click on each cell to open it as the data frame it contains.
 
