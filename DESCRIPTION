@@ -25,7 +25,8 @@ Imports:
     lavaan, 
     effsize, 
     metafor,
-    cowplot
+    cowplot,
+    ggtext
 Suggests:
     knitr,
     kableExtra,
