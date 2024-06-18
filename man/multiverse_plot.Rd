@@ -35,6 +35,8 @@ multiverse_plot(
 \item{relative_height_of_upper_plot}{The height of the upper plot for the simulation outcomes relative to the conditions. Defaults to 0.70. May need to be increased if intervals are used.}
 
 \item{outcome_cutoff}{If a numeric value is specified, a horizontal dashed line will be added to the outcomes plot at this value. This can be used to represent cut-off values, e.g., 80\% power. Defaults to NULL.}
+
+\item{limits}{y limits for the estimates plot. Must be either NULL or specified as a two element numeric vector, e.g., \code{c(0,1)}.}
 }
 \description{
 Plot results from a simulation using a multiverse-style plot

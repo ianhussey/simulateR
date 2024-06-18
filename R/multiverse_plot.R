@@ -15,7 +15,7 @@
 #' @param rank_by_outcome If TRUE, create ranks by ranking the outcome column, therefore ignoring rank_by. Defaults to FALSE.
 #' @param relative_height_of_upper_plot The height of the upper plot for the simulation outcomes relative to the conditions. Defaults to 0.70. May need to be increased if intervals are used.
 #' @param outcome_cutoff If a numeric value is specified, a horizontal dashed line will be added to the outcomes plot at this value. This can be used to represent cut-off values, e.g., 80% power. Defaults to NULL.
-
+#' @param limits y limits for the estimates plot. Must be either NULL or specified as a two element numeric vector, e.g., `c(0,1)`. 
 #' @export
 multiverse_plot <- function(data, 
                             outcome = "outcome", 
