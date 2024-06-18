@@ -25,7 +25,8 @@ multiverse_plot <- function(data,
                             rank_by = "rank",
                             rank_by_outcome = FALSE,
                             relative_height_of_upper_plot = 0.70, 
-                            outcome_cutoff = NULL){
+                            outcome_cutoff = NULL,
+                            limits = NULL){
 
   # TODO consider checking inputs with rlang::ensym(variable)
   
@@ -91,9 +92,20 @@ multiverse_plot <- function(data,
     p_estimates <- p_estimates + geom_hline(yintercept = outcome_cutoff, linetype = "dotted")
   }
   
+  if(!is.null(limits)){
+    p_estimates <- p_estimates + ylim(limits)
+  }
+  
+  column_order <- data |>
+    select(-rank, -outcome, -interval_lower, -interval_upper) |>
+    colnames()
+  
   p_specs <- data |> 
     tidyr::pivot_longer(cols = c(-"rank", -"outcome", -"interval_lower", -"interval_upper")) |> 
     arrange(rank) |>
+    # order the conditions from bottom to top based on the column order from left to right
+    mutate(name = forcats::fct_relevel(name, column_order),
+           name = forcats::fct_rev(name)) |>
     ggplot(aes(x = rank, y = factor(value), color = name)) + 
     geom_point(size = 2, shape = "square") +
     facet_grid(name ~ ., space = "free_y", scales = "free_y", switch = "y") +

@@ -13,7 +13,8 @@ multiverse_plot(
   rank_by = "rank",
   rank_by_outcome = FALSE,
   relative_height_of_upper_plot = 0.7,
-  outcome_cutoff = NULL
+  outcome_cutoff = NULL,
+  limits = NULL
 )
 }
 \arguments{
